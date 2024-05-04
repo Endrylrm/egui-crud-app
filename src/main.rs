@@ -6,7 +6,10 @@ use serde::{Serialize, Deserialize};
 use std::fs::{read_to_string, write};
 
 fn main() -> eframe::Result<()> {
-    let native_options = eframe::NativeOptions::default();
+    let native_options = eframe::NativeOptions {
+        viewport: egui::ViewportBuilder::default().with_inner_size([620.0, 600.0]),
+        ..Default::default()
+    };
     eframe::run_native("Egui CRUD", native_options, Box::new(|cc| Box::new(Application::new(cc))))
 }
 
