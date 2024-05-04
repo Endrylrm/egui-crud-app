@@ -106,12 +106,12 @@ impl eframe::App for Application {
                     if ui.button("Search Products").clicked() {
                         if !self.search.is_empty() && !self.searching {
                             self.old_products = self.products.clone();
-                            self.products.retain(|p| p.product_name.contains(&self.search));
+                            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
                             self.searching = true;
                         } else if !self.search.is_empty() && self.searching {
                             self.products = self.old_products.clone();
                             self.old_products = self.products.clone();
-                            self.products.retain(|p| p.product_name.contains(&self.search));
+                            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
                         } else if self.search.is_empty() && self.searching {
                             self.products = self.old_products.clone();
                             self.old_products.clear();
@@ -122,12 +122,12 @@ impl eframe::App for Application {
                     if search_txt.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
                         if !self.search.is_empty() && !self.searching {
                             self.old_products = self.products.clone();
-                            self.products.retain(|p| p.product_name.contains(&self.search));
+                            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
                             self.searching = true;
                         } else if !self.search.is_empty() && self.searching {
                             self.products = self.old_products.clone();
                             self.old_products = self.products.clone();
-                            self.products.retain(|p| p.product_name.contains(&self.search));
+                            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
                         } else if self.search.is_empty() && self.searching {
                             self.products = self.old_products.clone();
                             self.old_products.clear();
