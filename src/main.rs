@@ -57,18 +57,41 @@ impl Application {
         cc.egui_ctx.set_visuals(egui::Visuals::dark());
         Self::default()
     }
+
+    fn set_current_id(&mut self)  {
+        if self.products.last().is_none() {
+            self.cur_index = 0;
+            self.cur_product.id = self.cur_index;
+        }
+        else {
+            self.cur_index = self.products.last().unwrap().id + 1;
+            self.cur_product.id = self.cur_index;
+        }
+    }
+    
+    fn search_products(&mut self) {
+        if !self.search.is_empty() && !self.searching {
+            self.old_products = self.products.clone();
+            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
+            self.searching = true;
+        } else if !self.search.is_empty() && self.searching {
+            self.products = self.old_products.clone();
+            self.old_products = self.products.clone();
+            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
+        } else if self.search.is_empty() && self.searching {
+            self.products = self.old_products.clone();
+            self.old_products.clear();
+            self.searching = false;
+        }
+    }
 }
 
 impl eframe::App for Application {
    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.with_layout(egui::Layout::top_down_justified(egui::Align::Center), |ui| {
-                if self.products.last().is_none() {
-                    self.cur_index = 0;
-                }
-                else {
-                    self.cur_index = self.products.last().unwrap().id + 1;
-                }
+                // always update the current id for new products
+                self.set_current_id();
                 let heading_text = egui::RichText::new("Products").font(egui::FontId::proportional(40.0));
                 ui.heading(heading_text);
                 ui.separator();
@@ -88,12 +111,7 @@ impl eframe::App for Application {
                 ui.add_space(10.0);
                 ui.horizontal_wrapped(|ui| {
                     if ui.button("Add Product").clicked() {
-                        let my_product = Product::new(
-                            self.cur_index, 
-                            self.cur_product.product_name.to_owned(), 
-                            self.cur_product.value
-                        );
-                        self.products.push(my_product);
+                        self.products.push(self.cur_product.clone());
                     }
                     if ui.button("Save Products").clicked() {
                         let products = products_to_string(&self.products);
@@ -104,35 +122,11 @@ impl eframe::App for Application {
                         self.products = products_from_string(&data);
                     }
                     if ui.button("Search Products").clicked() {
-                        if !self.search.is_empty() && !self.searching {
-                            self.old_products = self.products.clone();
-                            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
-                            self.searching = true;
-                        } else if !self.search.is_empty() && self.searching {
-                            self.products = self.old_products.clone();
-                            self.old_products = self.products.clone();
-                            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
-                        } else if self.search.is_empty() && self.searching {
-                            self.products = self.old_products.clone();
-                            self.old_products.clear();
-                            self.searching = false;
-                        }
+                        self.search_products();
                     }
                     let search_txt = ui.text_edit_singleline(&mut self.search);
                     if search_txt.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
-                        if !self.search.is_empty() && !self.searching {
-                            self.old_products = self.products.clone();
-                            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
-                            self.searching = true;
-                        } else if !self.search.is_empty() && self.searching {
-                            self.products = self.old_products.clone();
-                            self.old_products = self.products.clone();
-                            self.products.retain(|p| p.product_name.to_lowercase().contains(&self.search.to_lowercase()));
-                        } else if self.search.is_empty() && self.searching {
-                            self.products = self.old_products.clone();
-                            self.old_products.clear();
-                            self.searching = false;
-                        }                   
+                        self.search_products();                   
                     }
                 });
                 ui.add_space(10.0);

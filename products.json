@@ -48,5 +48,15 @@
     "id": 9,
     "product_name": "Test 9",
     "value": 150.0
+  },
+  {
+    "id": 10,
+    "product_name": "Test 10",
+    "value": 500.0
+  },
+  {
+    "id": 11,
+    "product_name": "Test 11",
+    "value": 890.0
   }
 ]
