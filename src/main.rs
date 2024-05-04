@@ -118,7 +118,22 @@ impl eframe::App for Application {
                             self.searching = false;
                         }
                     }
-                    ui.text_edit_singleline(&mut self.search);
+                    let search_txt = ui.text_edit_singleline(&mut self.search);
+                    if search_txt.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
+                        if !self.search.is_empty() && !self.searching {
+                            self.old_products = self.products.clone();
+                            self.products.retain(|p| p.product_name.contains(&self.search));
+                            self.searching = true;
+                        } else if !self.search.is_empty() && self.searching {
+                            self.products = self.old_products.clone();
+                            self.old_products = self.products.clone();
+                            self.products.retain(|p| p.product_name.contains(&self.search));
+                        } else if self.search.is_empty() && self.searching {
+                            self.products = self.old_products.clone();
+                            self.old_products.clear();
+                            self.searching = false;
+                        }                   
+                    }
                 });
                 ui.add_space(10.0);
                 ui.separator();
