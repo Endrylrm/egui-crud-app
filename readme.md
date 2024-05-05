@@ -8,6 +8,8 @@ Apenas um simples aplicativo CRUD feito em Rust, usando egui e serde.
 
 É um pequeno sistema CRUD, onde você pode adicionar um produto, ler um produto, atualizar um produto e deletar.
 
+Obs.: a pesquisa é feita automaticamente enquanto digita na barra de pesquisa.
+
 ![Interface Gráfica](/assets/img/gui.png "Interface Gráfica")
 
 Após preencher os dados, é só clicar em "Add Product" e clicar em "Save Products" para salvar em um arquivo JSON.
