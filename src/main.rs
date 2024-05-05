@@ -126,9 +126,6 @@ impl eframe::App for Application {
                         self.old_products = self.products.clone();
                     }
                     let search_txt = ui.text_edit_singleline(&mut self.search);
-                    if search_txt.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
-                        self.search_products();                   
-                    }
                     if search_txt.changed() {
                         self.search_products();                     
                     }
