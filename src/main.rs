@@ -123,13 +123,14 @@ impl eframe::App for Application {
                     if ui.button("Read Products").clicked() {
                         let data = read_to_string("./products.json").expect("Unable to read file");
                         self.products = products_from_string(&data);
-                    }
-                    if ui.button("Search Products").clicked() {
-                        self.search_products();
+                        self.old_products = self.products.clone();
                     }
                     let search_txt = ui.text_edit_singleline(&mut self.search);
                     if search_txt.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
                         self.search_products();                   
+                    }
+                    if search_txt.changed() {
+                        self.search_products();                     
                     }
                 });
                 ui.add_space(10.0);
