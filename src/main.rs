@@ -166,6 +166,9 @@ impl eframe::App for Application {
                     while index < self.products.len() {
                         body.row(30.0, |mut row| {
                             row.col(|ui| {
+                                // bugfix: each time we deleted a product
+                                // it didn't update the id of the others products
+                                self.products[index].id = index;
                                 ui.label(self.products[index].id.to_string());
                             });
                             row.col(|ui| {
