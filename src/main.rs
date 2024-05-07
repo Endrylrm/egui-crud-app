@@ -62,13 +62,25 @@ impl Application {
     }
 
     fn set_current_id(&mut self)  {
-        if self.products.last().is_none() {
-            self.cur_index = 0;
-            self.cur_product.id = self.cur_index;
+        if !self.searching {
+            if self.products.last().is_none() {
+                self.cur_index = 0;
+                self.cur_product.id = self.cur_index;
+            }
+            else {
+                self.cur_index = self.products.last().unwrap().id + 1;
+                self.cur_product.id = self.cur_index;
+            }
         }
-        else {
-            self.cur_index = self.products.last().unwrap().id + 1;
-            self.cur_product.id = self.cur_index;
+        else if self.searching {
+            if self.old_products.last().is_none() {
+                self.cur_index = 0;
+                self.cur_product.id = self.cur_index;
+            }
+            else {
+                self.cur_index = self.old_products.last().unwrap().id + 1;
+                self.cur_product.id = self.cur_index;
+            }
         }
     }
     
@@ -122,7 +134,12 @@ impl eframe::App for Application {
                 ui.add_space(10.0);
                 ui.horizontal_wrapped(|ui| {
                     if ui.button("Add Product").clicked() {
-                        self.products.push(self.cur_product.clone());
+                        if self.searching {
+                            self.old_products.push(self.cur_product.clone()); 
+                        }
+                        else {
+                            self.products.push(self.cur_product.clone());
+                        }
                     }
                     if ui.button("Save Products").clicked() {
                         let products = products_to_string(&self.products);
