@@ -168,7 +168,9 @@ impl eframe::App for Application {
                             row.col(|ui| {
                                 // bugfix: each time we deleted a product
                                 // it didn't update the id of the others products
-                                self.products[index].id = index;
+                                if !self.searching {
+                                    self.products[index].id = index;
+                                }
                                 ui.label(self.products[index].id.to_string());
                             });
                             row.col(|ui| {
