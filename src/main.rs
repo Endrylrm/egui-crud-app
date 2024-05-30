@@ -152,7 +152,7 @@ impl eframe::App for Application {
                     }
                     let search_txt = ui.text_edit_singleline(&mut self.search);
                     if search_txt.changed() {
-                        self.search_products();                     
+                        self.search_products();
                     }
                 });
                 ui.add_space(10.0);
